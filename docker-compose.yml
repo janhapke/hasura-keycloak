@@ -1,0 +1,88 @@
+version: '3.6'
+
+services:
+
+  # Hasura
+  hasura:
+    image: hasura/graphql-engine:v1.3.2
+    ports:
+    - "8080:8080"
+    depends_on:
+    - pg_hasura
+    - keycloak
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@pg_hasura:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey # comment out to make admin console public
+      # un-comment the following line to activate JWT Authentication:
+      # HASURA_GRAPHQL_JWT_SECRET: '{ "type": "RS256", "jwk_url": "http://keycloak:8080/auth/realms/master/protocol/openid-connect/certs" }'
+
+  # PostgreSQL Server for Hasura
+  pg_hasura:
+    image: postgres:12
+    volumes:
+    - pg_hausra_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+
+
+
+  # Keycloak
+  keycloak:
+    image: jboss/keycloak:latest
+    ports:
+      - "8081:8080"
+    depends_on:
+      - pg_keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: postgres
+      DB_ADDR: pg_keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+
+  # PostgreSQL Server for Keycloak
+  pg_keycloak:
+      image: postgres:12
+      volumes:
+        - pg_keycloak_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_DB: keycloak
+        POSTGRES_USER: keycloak
+        POSTGRES_PASSWORD: password
+
+
+
+  # Hasura Action  
+  keycloak-hasura-action:
+    build:
+      context: keycloak-hasura-action
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      KEYCLOAK_HOST: 'http://keycloak:8080'
+      KEYCLOAK_ADMIN_USER: 'admin'
+      KEYCLOAK_ADMIN_PASSWORD: 'admin'
+
+
+  # Hasura Remote Schema
+  keycloak-hasura-remote-schema:
+    build:
+      context: keycloak-hasura-remote-schema
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      KEYCLOAK_HOST: 'http://keycloak:8080'
+      KEYCLOAK_ADMIN_USER: 'admin'
+      KEYCLOAK_ADMIN_PASSWORD: 'admin'
+
+
+
+volumes:
+  pg_hausra_data:
+  pg_keycloak_data:
