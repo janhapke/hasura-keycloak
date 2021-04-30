@@ -88,13 +88,13 @@ This mapper will add the `x-hasura-user-id` element to the claims object and fil
 #### Create Mapper for `x-hasura-default-role`
 Go to Clients -> `hasura` -> Mappers. Click on "Create" and enter the following values:
 
-|                  |                                                  |
-|------------------|--------------------------------------------------|
-| Name             | `x-hasura-default-role`                          |
-| Mapper Type      | Hardcoded claim                                  |
-| Token Claim Name | `https://hasura\.io/jwt/claims.x-hasura-user-id` |
-| Claim value      | `user`                                           |
-| Claim JSON Type  | String                                           |
+|                  |                                                       |
+|------------------|-------------------------------------------------------|
+| Name             | `x-hasura-default-role`                               |
+| Mapper Type      | Hardcoded claim                                       |
+| Token Claim Name | `https://hasura\.io/jwt/claims.x-hasura-default-role` |
+| Claim value      | `user`                                                |
+| Claim JSON Type  | String                                                |
 
 This mapper will add the `x-hasura-default-role` element to the claims object and fill it with the value "user".
 
