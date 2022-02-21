@@ -23,7 +23,7 @@ services:
   pg_hasura:
     image: postgres:12
     volumes:
-    - pg_hausra_data:/var/lib/postgresql/data
+    - pg_hasura_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
 
@@ -84,5 +84,5 @@ services:
 
 
 volumes:
-  pg_hausra_data:
+  pg_hasura_data:
   pg_keycloak_data:
